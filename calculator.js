@@ -1,3 +1,7 @@
+let displayValue = "";
+
+
+
 function add(num1, num2) {
     return num1 + num2;
 }
@@ -25,3 +29,13 @@ function operate(operator, num1, num2) {
         return divide(num1, num2);
     }
 }
+
+const displayDOM = document.querySelector('.display');
+const digitsDOM = document.querySelectorAll('button.digit');
+
+function populateDisplay(e) {
+    displayDOM.textContent += e.target.value;
+    displayValue += e.target.value;
+}
+
+digitsDOM.forEach(digit => digit.addEventListener('click', populateDisplay));
