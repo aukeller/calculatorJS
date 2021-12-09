@@ -1,10 +1,3 @@
-let displayValue = "";
-
-let resultDisplayed = false;
-let storedValues = [];
-let storedOperations = [];
-
-
 function add(num1, num2) {
     return num1 + num2;
 }
@@ -37,52 +30,81 @@ const displayDOM = document.querySelector('.display');
 const digitsDOM = document.querySelectorAll('button.digit');
 const operatorsDOM = document.querySelectorAll('button.operator');
 const equalsDOM = document.querySelector('#equals');
+const clearDOM = document.querySelector('#clear');
 
-function populateDisplay(e) {
-    if (resultDisplayed) {
+
+let displayValue = ""
+
+let firstNum;
+let secondNum;
+
+let operatorVal = "";
+
+let solution = 0
+
+let operatorEngaged = false;
+
+digitsDOM.forEach(digit => digit.addEventListener('click', function (e) {
+    if (operatorEngaged == true) {
         displayDOM.textContent = "";
+        displayValue = "";
     }
+    // populate the display of html div with string value of button
     displayDOM.textContent += e.target.value;
-    storeDisplayValue(e.target.value);
-}
 
-const storeDisplayValue = (value) => displayValue += value;
+    // store div display in displayValue variable
+    displayValue += e.target.value;
 
-function storeValue() {
-    storedValues.push(parseInt(displayValue));
-    displayValue = "";
-    displayDOM.textContent = "";
-}
+}));
 
-function evaluate() {
-    let result = 0;
-    let j = 0 // using as a second counter
-    
-    storeValue(); // needs to store value thats still on the display when equals is clicked
-
-    for (let i = 0; i < storedValues.length; i += 2) {
-        result += operate(storedOperations[j], storedValues[i], storedValues[i+1])
-        j++;
-    }
-
-    displayDOM.textContent = `${result}`;
-    resultDisplayed = true;
-
-    storedValues = [];
-    storedOperations = [];
-
-}
-
-digitsDOM.forEach(digit => digit.addEventListener('click', populateDisplay));
 
 operatorsDOM.forEach(operator => operator.addEventListener('click', function(e) {
-    storedOperations.push(e.target.value);
-    storeValue();
-}))
+    operatorEngaged = true;
+    // evaluate result if operator has value, first num has value, and displayvalue has value
+    if (operatorVal.length > 0 && firstNum != undefined && displayValue.length > 0) {
 
-equalsDOM.addEventListener('click', evaluate);
+        secondNum = parseInt(displayValue);
+        solution = operate(operatorVal, firstNum, secondNum);
+        
+        displayDOM.textContent = `${solution}`;
+        displayValue = solution;
+        operatorVal = e.target.value;
+    
+        firstNum = solution;
+        secondNum = undefined;
+
+    } else {
+        // stores the first number that is input into the calculator when a user presses an operator, in firstNum variable
+        if (!firstNum) {
+            firstNum = parseInt(displayValue);
+        } else {
+            secondNum = parseInt(displayValue);
+        }
+        // saves which operation has been chosen in operator variable
+        operatorVal = e.target.value;
+        // clears display div content and displayValue variable for next number
+        displayDOM.textContent = "";
+        displayValue = "";
+
+    }
+
+}));
+
+equalsDOM.addEventListener('click', function() {
+
+    // Grabs number that is on display when equals is pushed and stores it in secondNum variable
+    secondNum = parseInt(displayValue);
+
+    // calculates solution and stores in solution variable
+    solution = operate(operatorVal, firstNum, secondNum);
+    
+    displayDOM.textContent = `${solution}`;
+    displayValue = solution;
+    operatorVal = "";
+
+    firstNum = solution;
+    secondNum = undefined;
+
+})
 
 
-// [12, 34, 21, 21]
-
-// ['+', '-']
