@@ -1,17 +1,17 @@
 function add(num1, num2) {
-    return num1 + num2;
+    return Math.round((num1 + num2) * 100) / 100;
 }
 
 function subtract(num1, num2) {
-    return num1 - num2;
+    return Math.round((num1 - num2) * 100) / 100;
 }
 
 function multiply(num1, num2) {
-    return num1 * num2;
+    return Math.round((num1 * num2) * 100) / 100;
 }
 
 function divide(num1, num2) {
-    return num1 / num2;
+    return Math.round((num1 / num2) * 100) / 100;
 }
 
 function operate(operator, num1, num2) {
@@ -31,80 +31,90 @@ const digitsDOM = document.querySelectorAll('button.digit');
 const operatorsDOM = document.querySelectorAll('button.operator');
 const equalsDOM = document.querySelector('#equals');
 const clearDOM = document.querySelector('#clear');
+const decimalDOM = document.querySelector("#decimal");
 
 
 let displayValue = ""
 
 let firstNum;
-let secondNum;
+let operator = "";
 
-let operatorVal = "";
 
-let solution = 0
+function clear() {
+    displayDOM.textContent = "";
+    displayValue = "";
+    firstNum = undefined;
+    operator = "";
+}
 
-let operatorEngaged = false;
+function dividingByZero() {
+    if (operator == "/" && displayValue == 0) {
+        return true;
+    }
+}
+
 
 digitsDOM.forEach(digit => digit.addEventListener('click', function (e) {
-    if (operatorEngaged == true) {
-        displayDOM.textContent = "";
-        displayValue = "";
-    }
+    let number = e.target.value;
+    
     // populate the display of html div with string value of button
-    displayDOM.textContent += e.target.value;
-
+    if (firstNum && operator || displayDOM.textContent == "ERROR") {
+        displayDOM.textContent = number;
+    } else {
+        displayDOM.textContent += number;
+    }
+    
     // store div display in displayValue variable
-    displayValue += e.target.value;
-
+    displayValue += number;
 }));
 
-
-operatorsDOM.forEach(operator => operator.addEventListener('click', function(e) {
-    operatorEngaged = true;
-    // evaluate result if operator has value, first num has value, and displayvalue has value
-    if (operatorVal.length > 0 && firstNum != undefined && displayValue.length > 0) {
-
-        secondNum = parseInt(displayValue);
-        solution = operate(operatorVal, firstNum, secondNum);
-        
-        displayDOM.textContent = `${solution}`;
-        displayValue = solution;
-        operatorVal = e.target.value;
+operatorsDOM.forEach(operatorDOM => operatorDOM.addEventListener('click', function(e){
     
-        firstNum = solution;
-        secondNum = undefined;
-
-    } else {
-        // stores the first number that is input into the calculator when a user presses an operator, in firstNum variable
-        if (!firstNum) {
-            firstNum = parseInt(displayValue);
-        } else {
-            secondNum = parseInt(displayValue);
+    if (firstNum && operator && displayValue) {
+        if (dividingByZero() == true) {
+            clear();
+            displayDOM.textContent = "ERROR"
+            return;
         }
-        // saves which operation has been chosen in operator variable
-        operatorVal = e.target.value;
-        // clears display div content and displayValue variable for next number
+
+        let result = operate(operator, firstNum, parseInt(displayValue));
+        
+        displayDOM.textContent = result.toString();
+        displayValue = ""
+        firstNum = result;
+    } else {
         displayDOM.textContent = "";
+        firstNum = parseInt(displayValue);
         displayValue = "";
-
     }
-
+    
+    operator = e.target.value;
 }));
 
 equalsDOM.addEventListener('click', function() {
+    if (dividingByZero() == true) {
+        clear();
+        displayDOM.textContent = "ERROR"
+        return;
+    }
 
-    // Grabs number that is on display when equals is pushed and stores it in secondNum variable
-    secondNum = parseInt(displayValue);
-
-    // calculates solution and stores in solution variable
-    solution = operate(operatorVal, firstNum, secondNum);
+    if (firstNum && displayValue && operator) {
+        let result = operate(operator, firstNum, parseInt(displayValue));
+        displayDOM.textContent = result;
+        displayValue = result.toString();
     
-    displayDOM.textContent = `${solution}`;
-    displayValue = solution;
-    operatorVal = "";
+        firstNum = undefined;
+        
+        operator = "";
+    }
+});
 
-    firstNum = solution;
-    secondNum = undefined;
 
-})
+
+clearDOM.addEventListener('click', clear);
+
+
+
+
 
 
