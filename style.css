@@ -1,0 +1,75 @@
+body {
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+button {
+    border: 2px solid #232323;
+}
+
+.container {
+    height: 600px;
+    width: 350px;
+    border: 1px solid black;
+    border-radius: 15px;
+    background-color: #3e3e3e;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.display {
+
+    margin: 30px 0px;
+    height: 100px;
+    width: 290px;
+
+    border: 1px solid black;
+    border-radius: 10px;
+
+    background-color: #9baf52;
+}
+
+
+
+.buttons-container {
+    display: grid;
+    grid-template-columns: 50px 50px 50px 50px;
+    grid-template-rows: 50px 50px 50px 50px 50px;
+
+    column-gap: 30px;
+    row-gap: 30px;
+}
+
+.digit, #decimal, .operator[value="+"], .operator[value="-"] {
+    background-color: #5b5b5b;
+    color: #b8b8b8;
+}
+
+.operator[value="/"], .operator[value="*"], #clear {
+    background-color: #252525;
+    color: #b8b8b8;
+}
+
+button[value="0"] {
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
+
+button[id="clear"] {
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
+
+button[id="equals"] {
+    grid-column-start: 4;
+    grid-row-start: 4;
+    grid-row-end: 6;
+    background-color: #a8240a;
+    color: #b8b8b8;
+}
+
