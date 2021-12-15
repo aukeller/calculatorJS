@@ -58,14 +58,16 @@ digitsDOM.forEach(digit => digit.addEventListener('click', function (e) {
     let number = e.target.value;
     
     // populate the display of html div with string value of button
-    if (firstNum && operator || displayDOM.textContent == "ERROR") {
+    if (!displayValue && displayDOM.textContent.length > 0  || displayDOM.textContent == "ERROR") {
         displayDOM.textContent = number;
+        displayValue = number;
     } else {
         displayDOM.textContent += number;
+        displayValue += number;
     }
     
     // store div display in displayValue variable
-    displayValue += number;
+   
 }));
 
 operatorsDOM.forEach(operatorDOM => operatorDOM.addEventListener('click', function(e){
@@ -77,18 +79,22 @@ operatorsDOM.forEach(operatorDOM => operatorDOM.addEventListener('click', functi
             return;
         }
 
-        let result = operate(operator, firstNum, parseInt(displayValue));
+        let result = operate(operator, firstNum, parseFloat(displayValue));
         
         displayDOM.textContent = result.toString();
-        displayValue = ""
-        firstNum = result;
-    } else {
-        displayDOM.textContent = "";
-        firstNum = parseInt(displayValue);
         displayValue = "";
+        firstNum = result;
+
+        operator = e.target.value;
+    } else if (displayValue) {
+        displayDOM.textContent = "";
+        firstNum = parseFloat(displayValue);
+        displayValue = "";
+
+        operator = e.target.value;
     }
     
-    operator = e.target.value;
+    
 }));
 
 equalsDOM.addEventListener('click', function() {
@@ -99,7 +105,7 @@ equalsDOM.addEventListener('click', function() {
     }
 
     if (firstNum && displayValue && operator) {
-        let result = operate(operator, firstNum, parseInt(displayValue));
+        let result = operate(operator, firstNum, parseFloat(displayValue));
         displayDOM.textContent = result;
         displayValue = result.toString();
     
@@ -109,9 +115,21 @@ equalsDOM.addEventListener('click', function() {
     }
 });
 
-
+decimalDOM.addEventListener('click', function() {
+    if (!displayDOM.textContent.includes('.')) {
+        displayDOM.textContent += '.';
+        displayValue += '.';
+    }
+});
 
 clearDOM.addEventListener('click', clear);
+
+window.addEventListener('click', function() {
+    console.log(firstNum);
+    console.log(displayValue);
+    console.log(operator);
+    console.log(displayDOM.textContent);
+})
 
 
 
