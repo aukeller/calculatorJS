@@ -32,6 +32,7 @@ const operatorsDOM = document.querySelectorAll('button.operator');
 const equalsDOM = document.querySelector('#equals');
 const clearDOM = document.querySelector('#clear');
 const decimalDOM = document.querySelector("#decimal");
+const delDOM = document.querySelector('#del');
 
 
 let displayValue = ""
@@ -124,13 +125,12 @@ decimalDOM.addEventListener('click', function() {
 
 clearDOM.addEventListener('click', clear);
 
-window.addEventListener('click', function() {
-    console.log(firstNum);
-    console.log(displayValue);
-    console.log(operator);
-    console.log(displayDOM.textContent);
-})
-
+delDOM.addEventListener('click', function() {
+    if (displayDOM.textContent.length > 0) {
+        displayDOM.textContent = displayDOM.textContent.slice(0, -1);
+        displayValue = displayValue.slice(0, -1);
+    }
+});
 
 
 
