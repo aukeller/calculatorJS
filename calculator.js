@@ -54,9 +54,13 @@ function dividingByZero() {
     }
 }
 
-
-digitsDOM.forEach(digit => digit.addEventListener('click', function (e) {
-    let number = e.target.value;
+function displayDigit(e) {
+    let number;
+    if (typeof e === 'string') {
+        number = e;
+    } else {
+        number = e.target.value;
+    }
     
     // populate the display of html div with string value of button
     if (!displayValue && displayDOM.textContent.length > 0  || displayDOM.textContent == "ERROR") {
@@ -66,13 +70,15 @@ digitsDOM.forEach(digit => digit.addEventListener('click', function (e) {
         displayDOM.textContent += number;
         displayValue += number;
     }
-    
-    // store div display in displayValue variable
-   
-}));
+}
 
-operatorsDOM.forEach(operatorDOM => operatorDOM.addEventListener('click', function(e){
-    
+function useOperator(e) {
+    let operSign;
+    if (typeof e === 'string') {
+        operSign = e;
+    } else {
+        operSign = e.target.value;
+    }
     if (firstNum && operator && displayValue) {
         if (dividingByZero() == true) {
             clear();
@@ -86,19 +92,17 @@ operatorsDOM.forEach(operatorDOM => operatorDOM.addEventListener('click', functi
         displayValue = "";
         firstNum = result;
 
-        operator = e.target.value;
+        operator = operSign;
     } else if (displayValue) {
         displayDOM.textContent = "";
         firstNum = parseFloat(displayValue);
         displayValue = "";
 
-        operator = e.target.value;
+        operator = operSign;
     }
-    
-    
-}));
+}
 
-equalsDOM.addEventListener('click', function() {
+function calculate() {
     if (dividingByZero() == true) {
         clear();
         displayDOM.textContent = "ERROR"
@@ -114,25 +118,53 @@ equalsDOM.addEventListener('click', function() {
         
         operator = "";
     }
-});
+}
 
-decimalDOM.addEventListener('click', function() {
+function displayDecimal() {
     if (!displayDOM.textContent.includes('.')) {
         displayDOM.textContent += '.';
         displayValue += '.';
     }
-});
+}
 
-clearDOM.addEventListener('click', clear);
-
-delDOM.addEventListener('click', function() {
+function del() {
     if (displayDOM.textContent.length > 0) {
         displayDOM.textContent = displayDOM.textContent.slice(0, -1);
         displayValue = displayValue.slice(0, -1);
     }
+}
+
+
+digitsDOM.forEach(digit => digit.addEventListener('click', displayDigit));
+
+operatorsDOM.forEach(operatorDOM => operatorDOM.addEventListener('click', useOperator));
+
+equalsDOM.addEventListener('click', calculate);
+
+decimalDOM.addEventListener('click', displayDecimal);
+
+clearDOM.addEventListener('click', clear);
+
+delDOM.addEventListener('click', del);
+
+
+
+window.addEventListener('keydown', (e) => {
+    const digits = "1234567890";
+    const operators = "+-/*"
+    
+    if (digits.includes(e.key)) {
+        displayDigit(e.key);
+    } else if (operators.includes(e.key)) {
+        useOperator(e.key);
+    } else if (e.key == "Enter") {
+        calculate();
+    } else if (e.key == ".") {
+        displayDecimal();
+    } else if (e.key == "c") {
+        clear();
+    } else if (e.key == "Backspace"){
+        del();
+    }
 });
-
-
-
-
 
